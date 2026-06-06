@@ -2,48 +2,60 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mi Kardex Escolar</title>
     <style>
-        /* --- NUEVA PALETA DE COLORES CYBERPUNK/NEÓN BASADA EN TU IMAGEN --- */
+        /* --- PALETA DE COLORES CYBERPUNK/NEÓN --- */
         :root {
             --bg-dark: #0b0f19;
-            --card-default: rgba(30, 41, 59, 0.75); /* Gris/azul oscuro esmerilado */
+            --card-default: rgba(30, 41, 59, 0.75);
             --card-border: rgba(255, 255, 255, 0.08);
-            --passed-color: #4c1d95; /* Morado aterciopelado (Velvet Purple) */
+            --passed-color: #4c1d95;
             --passed-text: #ffffff;
-            --cyan-progress: #00e6ff; /* Cyan eléctrico para la barra y porcentaje */
+            --cyan-progress: #00e6ff;
             --text-muted: rgba(255, 255, 255, 0.6);
         }
 
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            /* IMAGEN DE FONDO DE LA BIBLIOTECA CON TONOS NEÓN */
             background: var(--bg-dark) url('image_1.png') no-repeat center center fixed; 
             background-size: cover; 
-            padding: 15px; 
+            padding: 12px; 
             margin: 0; 
             color: #ffffff;
+            -webkit-tap-highlight-color: transparent; /* Quita el destello molesto al tocar en Android */
         }
 
-        /* --- ENCABEZADO CON EFECTO DE CRISTAL ESMERILADO (FROSTED GLASS) --- */
+        /* --- ENCABEZADO OPTIMIZADO PARA MÓVIL --- */
         header { 
             background: rgba(15, 23, 42, 0.65); 
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            padding: 15px; 
+            padding: 12px; 
             border-radius: 12px; 
             margin-bottom: 15px; 
             display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
+            flex-direction: column; /* Apilado en móvil para mejor espacio */
+            gap: 10px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
         }
         
-        header h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
 
-        /* --- CONTENEDORES DE SEMESTRES --- */
-        .grid-reticula { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+        header h1 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+
+        /* --- RETÍCULA EN VERTICAL PARA ANDROID --- */
+        .grid-reticula { 
+            display: flex;
+            flex-direction: column; /* Lista vertical ideal para scrollear con el pulgar */
+            gap: 15px; 
+        }
         
         .semestre-col { 
             background: rgba(15, 23, 42, 0.55); 
@@ -59,40 +71,36 @@
             background: rgba(0, 0, 0, 0.4); 
             color: white; 
             text-align: center; 
-            padding: 10px; 
+            padding: 8px; 
             font-weight: bold; 
-            font-size: 14px; 
+            font-size: 13px; 
             text-transform: uppercase;
             letter-spacing: 1px;
             border-bottom: 1px solid var(--card-border);
         }
         
-        /* --- MATERIAS --- */
+        /* --- MATERIAS MEJORADAS PARA EL TACTO --- */
         .materia-card { 
             background: var(--card-default);
             border: 1px solid var(--card-border); 
-            padding: 10px; 
-            cursor: pointer; 
+            padding: 12px; 
             position: relative; 
             margin: 8px; 
             border-radius: 6px; 
             display: flex; 
             flex-direction: column; 
             justify-content: space-between; 
-            height: 85px; 
+            height: 90px; /* Un poco más alta para evitar toques fantasma */
             box-sizing: border-box;
-            transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
-        }
-        .materia-card:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            user-select: none; /* Evita que se seleccione texto al mantener pulsado */
+            -webkit-user-select: none;
+            transition: background-color 0.2s;
         }
         
-        /* --- EFECTO BRUTAL: MATERIA APROBADA CON BORDE BLANCO MÁS GRUESO Y EN MOVIMIENTO --- */
+        /* --- MATERIA APROBADA CON BORDE ANIMADO --- */
         .materia-card.aprobada { 
             background-color: var(--passed-color); 
             color: var(--passed-text); 
-            /* Aumentamos el grosor del borde a 2px y mantenemos el degradado animado */
             border: 2px solid transparent;
             background-image: linear-gradient(var(--passed-color), var(--passed-color)), linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.1) 100%);
             background-size: 100% 100%, 200% 100%;
@@ -102,378 +110,40 @@
             animation: bovedaBrillo 3s linear infinite;
         }
 
-        /* Animación para que el brillo blanco gire continuamente */
         @keyframes bovedaBrillo {
             0% { background-position: 0% 0%, 0% 0%; }
             100% { background-position: 0% 0%, -200% 0%; }
         }
         
-        .materia-header { font-size: 10px; font-weight: bold; color: var(--text-muted); margin-right: 18px; }
+        .materia-header { font-size: 10px; font-weight: bold; color: var(--text-muted); margin-right: 25px; }
         .materia-card.aprobada .materia-header { color: rgba(255,255,255,0.6); }
         
-        .materia-name { font-size: 11px; font-weight: bold; text-transform: uppercase; line-height: 1.2; flex-grow: 1; margin-top: 4px; overflow: hidden; }
+        .materia-name { font-size: 12px; font-weight: bold; text-transform: uppercase; line-height: 1.2; flex-grow: 1; margin-top: 4px; overflow: hidden; }
         .materia-creditos { font-size: 10px; font-weight: 800; color: var(--text-muted); align-self: flex-end; }
         .materia-card.aprobada .materia-creditos { color: #ffffff; }
         
-        /* Botón Desbloquear */
+        /* Botón Desbloquear más grande para el pulgar */
         .btn-desbloquear { 
-            position: absolute; top: 5px; right: 5px; 
-            display: none; font-size: 10px; 
-            background: rgba(255, 255, 255, 0.2); 
+            position: absolute; top: 6px; right: 6px; 
+            display: none; font-size: 14px; 
+            background: rgba(255, 255, 255, 0.25); 
             border: 1px solid rgba(255, 255, 255, 0.4); 
             color: #fff;
             cursor: pointer; border-radius: 4px; z-index: 10; 
-            padding: 2px 4px;
+            padding: 4px 6px;
         }
-        .btn-desbloquear:hover { background: rgba(255,255,255,0.4); }
         .materia-card.aprobada .btn-desbloquear { display: block; }
         
-        /* --- ESTADÍSTICAS Y BARRA EN CYAN ELÉCTRICO --- */
-        .stats { font-weight: bold; font-size: 14px; text-align: right; }
-        #porc { color: var(--cyan-progress); font-size: 16px; }
-        .progress-bar { width: 160px; height: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 5px; overflow: hidden; margin-top: 5px; border: 1px solid rgba(255,255,255,0.05); }
+        /* --- ESTADÍSTICAS --- */
+        .stats { font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        #porc { color: var(--cyan-progress); font-size: 15px; }
+        .progress-bar { flex-grow: 1; max-width: 140px; height: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 5px; overflow: hidden; margin-left: 8px; border: 1px solid rgba(255,255,255,0.05); }
         .fill { height: 100%; background: var(--cyan-progress); width: 0%; transition: width 0.5s ease; box-shadow: 0 0 8px var(--cyan-progress); }
 
-        /* --- PANTALLA DE CARGA RESPETADA --- */
+        /* --- PANTALLA DE CARGA --- */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: #000000; color: #fff; display: flex; flex-direction: column;
             justify-content: center; align-items: center; z-index: 9999;
             transition: opacity 0.6s ease, visibility 0.6s;
         }
-
-        .bouquet-container {
-            display: flex; justify-content: center; align-items: flex-end;
-            height: 200px; width: 320px; margin-bottom: 50px; position: relative;
-        }
-        .rose {
-            font-size: 65px; position: absolute; bottom: 20px;
-            transform: scale(0); opacity: 0;
-            animation: growRose 4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-        .rose:nth-child(1) { left: 60px; animation-delay: 0.5s; transform-origin: bottom center; }
-        .rose:nth-child(2) { left: 120px; bottom: 45px; font-size: 80px; animation-delay: 1.2s; transform-origin: bottom center; }
-        .rose:nth-child(3) { left: 185px; animation-delay: 0.8s; transform-origin: bottom center; }
-        .rose:nth-child(4) { left: 85px; bottom: 35px; animation-delay: 1.8s; transform-origin: bottom center; }
-        .rose:nth-child(5) { left: 150px; bottom: 32px; animation-delay: 2.2s; transform-origin: bottom center; }
-        
-        .bouquet-stem {
-            font-size: 45px; position: absolute; bottom: -20px; left: 135px;
-            transform: scale(0); opacity: 0;
-            animation: growRose 2s ease forwards; animation-delay: 2.8s;
-        }
-
-        @keyframes growRose {
-            0% { transform: scale(0) rotate(-15deg); opacity: 0; }
-            50% { opacity: 0.5; }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-
-        #loading-text { 
-            font-size: 28px; font-weight: bold; text-align: center; 
-            max-width: 80%; min-height: 90px;
-            transition: opacity 0.4s ease; opacity: 0;
-            line-height: 1.4; letter-spacing: 0.5px;
-            background: linear-gradient(to right, #ff0000, #00ff00, #0000ff, #ff00ff, #ff0000);
-            background-size: 400% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: rgbShift 6s linear infinite;
-        }
-        @keyframes rgbShift { to { background-position: 400% center; } }
-
-        /* --- MODALES Y ALERTAS NEÓN --- */
-        .universal-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.85); display: none; justify-content: center;
-            align-items: center; z-index: 9000; backdrop-filter: blur(6px);
-        }
-        
-        .custom-modal {
-            background: #0f172a; padding: 35px; border-radius: 16px; text-align: center;
-            max-width: 480px; width: 90%; box-sizing: border-box;
-            border: 3px solid transparent;
-            background-image: linear-gradient(#0f172a, #0f172a), linear-gradient(to right, #ff0000, #00ff00, #0000ff, #ff00ff, #ff0000);
-            background-size: 400% auto, 400% auto;
-            background-origin: border-box; background-clip: padding-box, border-box;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), neonPulse 2s linear infinite, rgbShift 6s linear infinite;
-        }
-        
-        .custom-modal h2 { 
-            margin-top: 0; font-size: 32px; font-weight: bold;
-            background: linear-gradient(to right, #3b82f6, #ec4899, #f59e0b);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        
-        .custom-modal p { 
-            color: #f3f4f6; font-size: 19px; line-height: 1.6; margin: 22px 0; font-weight: bold;
-        }
-
-        @keyframes neonPulse { 
-            0%, 100% { box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); } 
-            50% { box-shadow: 0 0 35px rgba(236, 72, 153, 0.7); } 
-        }
-
-        .btn-modal {
-            background: linear-gradient(135deg, #8b5cf6, #ec4899); color: white; border: none;
-            padding: 14px 32px; font-size: 15px; font-weight: bold; text-transform: uppercase;
-            border-radius: 6px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
-        }
-        .btn-modal:hover { 
-            transform: scale(1.05);
-            box-shadow: 0 6px 18px rgba(236, 72, 153, 0.6);
-        }
-
-        @keyframes popIn { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-
-        .confetti {
-            position: absolute; width: 10px; height: 10px; top: -10px; z-index: 9500; opacity: 0.8;
-            animation: fall var(--d) linear infinite;
-        }
-        @keyframes fall { to { transform: translateY(105vh) rotate(360deg); } }
-    </style>
-</head>
-<body>
-
-<div id="loading-screen">
-    <div class="bouquet-container">
-        <span class="rose">🌹</span>
-        <span class="rose">🌹</span>
-        <span class="rose">🌹</span>
-        <span class="rose">🌹</span>
-        <span class="rose">🌹</span>
-        <span class="bouquet-stem">💐</span>
-    </div>
-    <div id="loading-text">Cargando motivación...</div>
-</div>
-
-<div id="universal-overlay-container" class="universal-overlay">
-    <div id="modal-content-box" class="custom-modal">
-        <h2 id="modal-title">Logro obtenido</h2>
-        <p id="modal-text">Mensaje</p>
-        <button class="btn-modal" onclick="cerrarModal()">Continuar con todo</button>
-    </div>
-</div>
-
-<header>
-    <h1>Mi Kardex</h1>
-    <div class="stats">
-        Progreso: <span id="porc">0%</span>
-        <div class="progress-bar"><div id="fill" class="fill"></div></div>
-    </div>
-    <div style="font-weight: bold; color: rgba(255,255,255,0.85);">Créditos: <span id="cred" style="color: var(--cyan-progress);">0</span>/230</div>
-</header>
-
-<div class="grid-reticula" id="kardex-container"></div>
-
-<script>
-    const TOTAL_CREDITOS = 230; 
-    const data = [
-        { s: 1, m: [["ACC0906",4,"FUND. INVESTIGACION"],["ACF2301",5,"CALCULO DIFERENCIAL"],["GEC2305",4,"DESARROLLO HUMANO"],["AEF1074",5,"FUND. DE GESTION"],["GEC0909",4,"FUND. DE FISICA"],["GEF0910",5,"FUND. DE QUIMICA"]] },
-        { s: 2, m: [["AEB1082",5,"SOFT. APLIC. EJEC."],["ACF0902",5,"CALCULO INTEGRAL"],["GED0903",5,"CONT. ORIENTADA NEG."],["AEC1014",4,"DINAMICA SOCIAL"],["ACH2307",4,"TALLER DE ETICA"],["GEE0918",4,"LEGISLACION LABORAL"]] },
-        { s: 3, m: [["AEC1078",4,"MARCO LEGAL ORGS."],["GED0921",5,"PROB. Y EST. DESC."],["GED0904",5,"COSTOS EMPRESARIALES"],["GEC0913",4,"HAB. DIRECTIVAS I"],["AEF1071",5,"ECONOMIA EMP."],["ACF0903",5,"ALGEBRA LINEAL"]] },
-        { s: 4, m: [["GEF0916",5,"ING. ECONOMICA"],["GEG0907",6,"EST. INFERENCIAL I"],["GED0917",5,"INST. PRESUP. EMP."],["GEC0914",4,"HAB. DIRECTIVAS II"],["GEF0906",5,"ENT. MACROECONOMICO"],["AEF1076",5,"INV. OPERACIONES"]] },
-        { s: 5, m: [["AEF1073",5,"FINANZAS ORGS"],["GEG0908",6,"EST. INFERENCIAL II"],["GEF0915",5,"ING. PROCESOS"],["AEG1075",6,"GESTION CAPITAL HUM."],["ACA0909",4,"TALLER INV. I"],["GEF0919",5,"MERCADOTECNIA"]] },
-        { s: 6, m: [["GEF0901",5,"ADMIN. SAL. SEG. OC."],["AED1072",5,"EMPREND. INNOVAC."],["GEC0911",4,"GESTION PROD. I"],["AED1015",5,"DISEÑO ORG."],["ACA0910",4,"TALLER INV. II"],["GED0922",5,"SIST. INFO. MERC."],["AC0950",5,"ACTIV. COMPLEM."]] },
-        { s: 7, m: [["AED1069",5,"CALIDAD G. EMP."],["GED0920",5,"PLAN NEGOCIOS"],["GEC0912",4,"GESTION PROD. II"],["AED1035",5,"GESTION ESTRATEGICA"],["ACD0908",5,"DES. SUSTENTABLE"],["AEB1045",5,"MERC. ELECTRONICA"]] },
-        { s: 8, m: [["GEF0902",5,"CAD. SUMINISTROS"],["GEA0950",10,"SERVICIO SOCIAL"]] },
-        { s: 9, m: [["RES1001",10,"RESIDENCIA PROF."]] }
-    ];
-
-    const bancoDeFrases = [
-        "¡Tú puedes con esto y más!", "Eres grande, nunca olvides de lo que eres capaz.",
-        "Confía en ti, ya has superado retos difíciles antes.", "Tienes todas las capacidades para lograrlo, ¡no lo dudes!",
-        "Materia por materia, estás construyendo tu éxito. ¡Dale con todo!", "Un mal día o un examen difícil no definen tu potencial. ¡Tú eres fuerte!",
-        "Confía en el proceso, tienes el talento necesario.", "¡Nadie te va a parar si tú crees en ti mismo!",
-        "Eres capaz de dominar cualquier materia, ¡no te achiques!", "Mantén la cabeza en alto, eres más fuerte de lo que crees.",
-        "No dudes de tu inteligencia, naciste para grandes cosas.", "Visualízate con tu título, ¡tienes todo para llegar!",
-        "Cada paso cuenta, eres una persona increíblemente capaz.", "La disciplina vence al talento, y tú tienes ambas.",
-        "Confía plenamente en tus habilidades, eres muy inteligente.", "¡Ánimo! Lo estás haciendo mucho mejor de lo que piensas.",
-        "Tienes el control de tu futuro, confía en tu mente.", "Eres grande y tu esfuerzo va a valer totalmente la pena.",
-        "No le tengas miedo a ninguna materia, eres superior a ellas.", "El camino es pesado, pero tú eres muchísimo más fuerte.",
-        "Confía en tus capacidades, no permitas que la duda te frene.", "¡Estás hecho para triunfar, créetelo ya!",
-        "Cada desvelada te acerca a tu meta. ¡Tú puedes!", "Tienes una mente brillante, confía en tus respuestas.",
-        "Eres un fuera de serie, ¡sigue demostrando de qué estás hecho!", "No te rindas ahora, tu versión del futuro te lo va a agradecer.",
-        "Confía en tu intuición y en tus conocimientos, eres capaz.", "¡Vamos, saca la casta! Tienes todo el potencial del mundo.",
-        "Eres grande y vas a terminar este Kardex con puro éxito.", "Que nadie te diga que no puedes; tú tienes la capacidad.",
-        "Confía en ti mismo en cada paso que des.", "Tu potencial es infinito, no te limites por un obstacle.",
-        "Eres inteligente, fuerte y muy capaz. ¡Demuestra tu poder!", "Avanza con paso firme, el éxito te pertenece por derecho.",
-        "Confía en lo que sabes, has trabajado duro para estar aquí.", "¡Eres grande! No dejes que la presión empañe tu mente.",
-        "Tienes las herramientas y la mente para conquistar este semestre.", "Cree en ti, tu fuerza de voluntad puede mover montañas.",
-        "No te subestimes jamás, vales oro y tienes la capacidad.", "¡Dale con todo hoy! Eres un ganador nato.",
-        "Confía en tu talento, estás en el lugar correcto.", "Eres capaz de resolver cualquier problema que te pongan enfrente.",
-        "Mantén el enfoque, eres gigante y vas a lograrlo.", "Confía en tu preparación, eres más inteligente de lo que crees.",
-        "¡Tú puedes! Estás a nada de cambiar tu vida para siempre.", "Eres grande por el simple hecho de no rendirte.",
-        "Tienes la capacidad de transformación del esfuerzo en éxito rotundo.", "Confía en ti, eres el dueño de tu propio destiny.",
-        "No hay reto que te quede grande si confías en tus capacidades.", "¡Arriba ese ánimo! Estás haciendo un trabajo espectacular."
-    ];
-
-    const frasesParaMostrar = [];
-    const copiaBanco = [...bancoDeFrases];
-    for (let i = 0; i < 3; i++) {
-        const randomIndex = Math.floor(Math.random() * copiaBanco.length);
-        frasesParaMostrar.push(copiaBanco.splice(randomIndex, 1)[0]);
-    }
-
-    const loadingText = document.getElementById('loading-text');
-    let pasoFrase = 0;
-
-    function rotarTresFrases() {
-        if (pasoFrase < 3) {
-            loadingText.style.opacity = '0'; 
-            setTimeout(() => {
-                loadingText.textContent = frasesParaMostrar[pasoFrase];
-                loadingText.style.opacity = '1'; 
-                pasoFrase++;
-            }, 400); 
-        }
-    }
-
-    rotarTresFrases(); 
-    const intervaloFrases = setInterval(rotarTresFrases, 3300); 
-
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            clearInterval(intervaloFrases); 
-            const screen = document.getElementById('loading-screen');
-            screen.style.opacity = '0';
-            screen.style.visibility = 'hidden';
-        }, 10500); 
-    });
-
-    const container = document.getElementById('kardex-container');
-    data.forEach(sem => {
-        let col = `<div class="semestre-col" id="sem-col-${sem.s}"><div class="semestre-header">Sem ${sem.s}</div>`;
-        sem.m.forEach((mat, i) => {
-            col += `<div class="materia-card" data-c="${mat[1]}" data-semestre="${sem.s}" id="m-${sem.s}-${i}">
-                        <button class="btn-desbloquear">🔓</button>
-                        <div class="materia-header">${mat[0]}</div>
-                        <div class="materia-name">${mat[2]}</div>
-                        <div class="materia-creditos">${mat[1]} CR</div>
-                    </div>`;
-        });
-        container.innerHTML += col + `</div>`;
-    });
-
-    document.querySelectorAll('.materia-card').forEach(card => {
-        const id = card.id;
-        if(localStorage.getItem(id)) card.classList.add('aprobada');
-        
-        card.addEventListener('click', () => {
-            if(!card.classList.contains('aprobada')) {
-                card.classList.add('aprobada');
-                localStorage.setItem(id, '1');
-                
-                calc();
-                checkLogrosEspeciales(card.dataset.semestre, true);
-            }
-        });
-        
-        card.querySelector('.btn-desbloquear').addEventListener('click', (e) => {
-            e.stopPropagation();
-            card.classList.remove('aprobada');
-            localStorage.removeItem(id);
-            
-            localStorage.removeItem('sem_completo_' + card.dataset.semestre);
-            
-            let credAct = 0;
-            document.querySelectorAll('.materia-card.aprobada').forEach(c => credAct += parseInt(c.dataset.c));
-            if ((credAct / TOTAL_CREDITOS) < 0.5) {
-                localStorage.removeItem('logro_mitad');
-            }
-            
-            calc();
-        });
-    });
-
-    function calc() {
-        let cred = 0;
-        document.querySelectorAll('.materia-card.aprobada').forEach(c => cred += parseInt(c.dataset.c));
-        document.getElementById('cred').textContent = cred;
-        let prog = Math.round((cred/TOTAL_CREDITOS)*100);
-        
-        if (prog > 100) prog = 100;
-
-        document.getElementById('porc').textContent = prog + '%';
-        document.getElementById('fill').style.width = prog + '%';
-        return { cred, prog };
-    }
-
-    function checkLogrosEspeciales(numSemestre, esClicEnVivo) {
-        const { cred, prog } = calc();
-        let modalDesplegado = false;
-        
-        // --- LOGRO 1: FIN DE LA CARRERA (100%) ---
-        if (cred === TOTAL_CREDITOS) {
-            if (!localStorage.getItem('logro_completo') || esClicEnVivo) {
-                localStorage.setItem('logro_completo', '1');
-                lanzarModal("🏆 ¡KARDEX COMPLETADO! 🏆", "¡Felicidades, eres un auténtico chingón, lo has logrado al 100%! Oficialmente terminaste todas las materias. Todo el esfuerzo valió la pena, ¡yo nunca dudé de ti!");
-                modalDesplegado = true;
-            }
-        }
-
-        // --- LOGRO 2: MITAD DE LA CARRERA (>= 50% ÚNICA VEZ) ---
-        if (prog >= 50 && !localStorage.getItem('logro_mitad') && !modalDesplegado) {
-            localStorage.setItem('logro_mitad', '1');
-            lanzarModal("💥 ¡MITAD DE LA CARRERA! 💥", "¡Estás a medio camino de convertirte en Ingeniero! Estás demostrando un nivel verdaderamente chingón. La parte más dura ya la dominaste, ahora vas directo a la cima. ¡Sigue rompiéndola!");
-            modalDesplegado = true;
-        }
-
-        // --- LOGRO 3: SEMESTRE COMPLETADO ---
-        if (!modalDesplegado) {
-            const datosSemestreActual = data.find(item => item.s == numSemestre);
-            if (datosSemestreActual) {
-                let totalMateriasSemestre = datosSemestreActual.m.length;
-                let aprobadasEnEsteSemestre = 0;
-                
-                datosSemestreActual.m.forEach((mat, idx) => {
-                    if (localStorage.getItem(`m-${numSemestre}-${idx}`)) {
-                        aprobadasEnEsteSemestre++;
-                    }
-                });
-
-                if (aprobadasEnEsteSemestre === totalMateriasSemestre) {
-                    const claveSemestre = 'sem_completo_' + numSemestre;
-                    if (!localStorage.getItem(claveSemestre) || esClicEnVivo) {
-                        localStorage.setItem(claveSemestre, '1');
-                        lanzarModal("✨ ¡SEMESTRE CONQUISTADO! ✨", `Felicidades por concluir exitosamente todas las materias del **Semestre ${numSemestre}**. Estás construyendo tu meta bloque por bloque con una disciplina admirable. ¡A por el siguiente reto!`);
-                    }
-                }
-            }
-        }
-    }
-
-    function lanzarModal(titulo, texto) {
-        document.getElementById('modal-title').innerHTML = titulo;
-        document.getElementById('modal-text').innerHTML = texto;
-        document.UniversalOverlay = document.getElementById('universal-overlay-container');
-        document.UniversalOverlay.style.display = 'flex';
-        
-        document.querySelectorAll('.confetti').forEach(el => el.remove());
-        for (let i = 0; i < 110; i++) crearParticulaConfeti();
-    }
-
-    function crearParticulaConfeti() {
-        const colores = ['#8b5cf6', '#f59e0b', '#10b981', '#3b82f6', '#ec4899', '#ffeb3b'];
-        const p = document.createElement('div');
-        p.classList.add('confetti');
-        p.style.left = Math.random() * 100 + 'vw';
-        p.style.background = colores[Math.floor(Math.random() * colores.length)];
-        p.style.transform = `scale(${Math.random() * 1 + 0.5})`;
-        p.style.setProperty('--d', Math.random() * 3 + 2 + 's'); 
-        if(Math.random() > 0.5) p.style.borderRadius = '50%';
-        
-        document.body.appendChild(p);
-        setTimeout(() => p.remove(), 5000);
-    }
-
-    function cerrarModal() {
-        document.UniversalOverlay.style.display = 'none';
-        document.querySelectorAll('.confetti').forEach(el => el.remove());
-    }
-
-    calc();
-</script>
-</body>
-</html>```
